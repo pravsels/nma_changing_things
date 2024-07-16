@@ -1,27 +1,24 @@
 # nma_changing_things
-### Goals to change things in the NCAP model
-- [Discord join link](https://discord.gg/P2tDTVky)
-- [Google drive](https://drive.google.com/drive/folders/1HQE-E6GZ1szZykE3tpdP0u6wxlMMTupk?usp=sharing)
-- [Daily guide for projects](https://neuroai.neuromatch.io/projects/docs/project_guidance.html)
 
-- [Pod zoom](https://us06web.zoom.us/j/7594739863?pwd=vAUL2cg5QDI0AbpYLot4cwBObejxbV.1)
+[Reading material for project](https://github.com/pravsels/nma_changing_things/reading.md)
 
+## Setup
 
-![Our general goal set up](https://github.com/neuromatch/NeuroAI_Course/blob/main/projects/project-notebooks/static/NCAPProjectTemplate.png?raw=true)
+Build docker container:
+```
+chmod u+x *.sh
 
-#### To dos:
-  - explore the implementation of the NCAP (get comfy somewhat)
-  - create environmental stuff with gradients
-  - make sensors?
-  - train 
-  
-#### Some background reading 
-##### Model, a computational worm
-- The [actual NCAP model paper](https://arxiv.org/pdf/2201.05242) 
-- The environment from [deepmind](https://github.com/google-deepmind/dm_control)
+./docker_build.sh
+```
 
-##### Biological worms
-- How worms [feed](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1352325)
-- How worms [sense 1](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7856205/)
-- and [the connectome](https://www.nature.com/articles/s41586-023-06683-4),
-- senses and how they impact [survival](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4282626/) 
+Run the container:
+```
+./run_docker_container.sh
+```
+
+## Run
+
+Run sample script: 
+```
+python random_actions.py 
+```
