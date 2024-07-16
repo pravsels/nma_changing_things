@@ -1,9 +1,14 @@
 # nma_changing_things
 ### Goals to change things in the NCAP model
-[Discord join link ](https://discord.gg/P2tDTVky)
-[Google drive] (https://drive.google.com/drive/folders/1HQE-E6GZ1szZykE3tpdP0u6wxlMMTupk?usp=sharing)
+- [Discord join link](https://discord.gg/P2tDTVky)
+- [Google drive] (https://drive.google.com/drive/folders/1HQE-E6GZ1szZykE3tpdP0u6wxlMMTupk?usp=sharing)
 
-[Pod zoom](https://us06web.zoom.us/j/7594739863?pwd=vAUL2cg5QDI0AbpYLot4cwBObejxbV.1)
+- [Pod zoom](https://us06web.zoom.us/j/7594739863?pwd=vAUL2cg5QDI0AbpYLot4cwBObejxbV.1)
+
+- [Daily guide for projects](https://neuroai.neuromatch.io/projects/docs/project_guidance.html)
+
+- ![Our general goal set up](https://github.com/neuromatch/NeuroAI_Course/blob/main/projects/project-notebooks/static/NCAPProjectTemplate.png?raw=true)
+
 #### To dos:
   - explore the implementation of the NCAP (get comfy somewhat)
   - create environmental stuff with gradients
