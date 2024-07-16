@@ -18,7 +18,7 @@
 #### Some background reading 
 ##### Model, a computational worm
 - The [actual NCAP model paper](https://arxiv.org/pdf/2201.05242) 
-
+- The environment from [deepmind](https://github.com/google-deepmind/dm_control)
 
 ##### Biological worms
 - How worms [feed](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1352325)
