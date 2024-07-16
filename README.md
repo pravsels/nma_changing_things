@@ -1,5 +1,9 @@
 # nma_changing_things
-### Goals to change things. 
+### Goals to change things in the NCAP model
+[Discord join link ](https://discord.gg/P2tDTVky)
+[Google drive] (https://drive.google.com/drive/folders/1HQE-E6GZ1szZykE3tpdP0u6wxlMMTupk?usp=sharing)
+
+[Pod zoom](https://us06web.zoom.us/j/7594739863?pwd=vAUL2cg5QDI0AbpYLot4cwBObejxbV.1)
 #### To dos:
   - explore the implementation of the NCAP (get comfy somewhat)
   - create environmental stuff with gradients
