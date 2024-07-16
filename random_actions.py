@@ -2,7 +2,7 @@ import numpy as np
 from dm_control import suite
 import dm_control.suite.swimmer as swimmer
 from acme import wrappers
-from environment import create_swim_environment
+from environment import swim_task
 from utils import render, write_video
 
 def test_dm_control(env, n_steps=60):
@@ -24,6 +24,7 @@ def test_dm_control(env, n_steps=60):
 if __name__ == "__main__":
     
     # Load and test the environment
-    env = suite.load('swimmer', 'create_swim_environment', task_kwargs={'random': 1})
+    env = suite.load('swimmer', 'swim_task', task_kwargs={'random': 1})
+    # import pdb; pdb.set_trace()
     test_dm_control(env)
 
