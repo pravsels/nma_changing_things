@@ -7,14 +7,9 @@ def render(env):
     """Renders the current environment state to an image."""
     return env.physics.render(camera_id=0, width=640, height=480)
 
-def write_video(
-    filepath: os.PathLike,
-    frames: Iterable[np.ndarray],
-    fps: int = 60,
-    quality: int = 10,
-    verbose: bool = False,
-    **kwargs
-):
+def write_video(filepath, frames, 
+                fps=60, quality=10,
+                verbose=False, **kwargs):
     """
     Saves a sequence of frames as a video file.
 
