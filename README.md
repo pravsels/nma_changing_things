@@ -7,7 +7,7 @@
   - train 
   
 #### Some background reading 
-- The [actual model paper](https://arxiv.org/pdf/2201.05242) 
+- The [actual NCAP model paper](https://arxiv.org/pdf/2201.05242) 
 
 - How worms [feed](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1352325)
 - How worms [sense 1](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7856205/)
