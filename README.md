@@ -36,6 +36,13 @@ Simulate worm using trained model:
 python play_saved_model.py 
 ```
 
+## Plotting  
+
+Plot the performances of the MLP and NCAP models: 
+```
+python plotting_logs.py 
+```
+
 ## Bonus: Setup for docker 
 
 Build docker container:
