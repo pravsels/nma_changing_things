@@ -29,6 +29,13 @@ Run train script:
 python training/main.py 
 ```
 
+## Running saved model 
+
+Simulate worm using trained model: 
+```
+python play_saved_model.py 
+```
+
 ## Bonus: Setup for docker 
 
 Build docker container:

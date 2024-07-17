@@ -12,7 +12,7 @@ SAVE_INTERVAL = 1e5
 actor_sizes = (32, 32)
 critic_sizes = (32, 32)
 # Experiment name
-experiment_name = 'mlp_256'
+experiment_name = 'mlp_32'
 ######################################################
 
 if __name__ == "__main__":
