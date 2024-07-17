@@ -47,12 +47,14 @@ def plot_performance(paths, output_file=None, title='Model Performance'):
 if __name__ == "__main__":
 
     mlp_model_folder = 'mlp_32'
-    ncap_model_folder = 'ppo_ncap_model_32'
+    ncap_model_folder1 = 'ppo_ncap_model_32'
+    # ncap_model_folder2 = 'd4pg_ncap_model_32'
     task_name = 'swimmer-swim_task'
 
     # Replace these paths with the paths to the models you want to plot
     paths = [
-        f'data/local/experiments/tonic/{task_name}/{ncap_model_folder}',
+        f'data/local/experiments/tonic/{task_name}/{ncap_model_folder1}',
+        # f'data/local/experiments/tonic/{task_name}/{ncap_model_folder2}',
         f'data/local/experiments/tonic/{task_name}/{mlp_model_folder}'
     ]
 

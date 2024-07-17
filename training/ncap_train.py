@@ -8,9 +8,9 @@ from constants import N_LINKS
 
 ##################  HYPERPARAMETERS ##################
 TOTAL_STEPS = 5e4
-SAVE_INTERVAL = 1e5
+SAVE_INTERVAL = 1e4
 # Model parameters
-model_size = 32
+model_size = 128
 critic_sizes = (model_size, model_size)
 # RL model to use 
 rl_model_func = ppo_ncap_model   # ppo_ncap_model / d4pg_ncap_model
@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     train(
         header='import tonic.torch',
-        agent=f'tonic.torch.agents.PPO(model={rl_model_func.__name__}(n_joints={N_LINKS-1},critic_sizes={critic_sizes}))',
+        agent=f"tonic.torch.agents.{rl_model_func.__name__.split('_')[0].upper()}(model={rl_model_func.__name__}(n_joints={N_LINKS-1},critic_sizes={critic_sizes}))",
         environment='tonic.environments.ControlSuite("swimmer-swim_task", time_feature=True)',
         name=experiment_name,
         trainer=f'tonic.Trainer(steps=int({TOTAL_STEPS}),save_steps=int({SAVE_INTERVAL}))'

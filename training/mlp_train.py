@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     train(
         header='import tonic.torch',
-        agent=f'tonic.torch.agents.PPO(model={rl_model_func.__name__}(actor_sizes={actor_sizes}, critic_sizes={critic_sizes}))',
+        agent=f"tonic.torch.agents.{rl_model_func.__name__.split('_')[0].upper()}(model={rl_model_func.__name__}(actor_sizes={actor_sizes}, critic_sizes={critic_sizes}))",
         environment='tonic.environments.ControlSuite("swimmer-swim_task")',
         name=experiment_name,
         trainer=f'tonic.Trainer(steps=int({TOTAL_STEPS}),save_steps=int({SAVE_INTERVAL}))'
