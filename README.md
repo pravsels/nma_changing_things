@@ -6,7 +6,7 @@
 
 Build conda environment: 
 ```
-conda env create -f environment.yaml
+conda env create -f conda_env.yaml
 ```
 
 Activate the conda environment: 
