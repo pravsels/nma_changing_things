@@ -1,6 +1,7 @@
 # nma_changing_things
 
-[Reading material for project](https://github.com/pravsels/nma_changing_things/reading.md)
+[Reading material for project](https://github.com/pravsels/nma_changing_things/blob/main/reading.md)
+
 
 ## Setup for conda
 
