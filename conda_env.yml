@@ -1,7 +1,6 @@
 name: nct
 channels:
   - conda-forge
-  - nvidia
 dependencies:
   - python=3.10
   - pip

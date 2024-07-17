@@ -100,7 +100,7 @@ class ControlSuiteEnvironment(gym.core.Env):
 
         # Create the observation space.
         observation_spec = self.environment.observation_spec()
-        dim = sum([np.int(np.prod(spec.shape))
+        dim = sum([int(np.prod(spec.shape))
                    for spec in observation_spec.values()])
         high = np.full(dim, np.inf, np.float32)
         self.observation_space = gym.spaces.Box(-high, high, dtype=np.float32)

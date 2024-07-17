@@ -6,7 +6,7 @@
 
 Build conda environment: 
 ```
-conda env create -f conda_env.yaml
+conda env create -f conda_env.yml
 ```
 
 Activate the conda environment: 
@@ -19,6 +19,13 @@ conda activate nct
 Run sample script: 
 ```
 python random_actions.py 
+```
+
+## Train
+
+Run train script: 
+```
+python training/main.py 
 ```
 
 ## Bonus: Setup for docker 
