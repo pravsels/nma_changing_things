@@ -43,6 +43,13 @@ Plot the performances of the MLP and NCAP models:
 python plotting_logs.py 
 ```
 
+## Network viz  
+
+Plot visualizations of the two networks: 
+```
+python draw_network.py 
+```
+
 ## Bonus: Setup for docker 
 
 Build docker container:
