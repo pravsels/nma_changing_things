@@ -26,7 +26,7 @@ python random_actions.py
 
 Run train script: 
 ```
-python training/main.py 
+python training/mlp_train.py 
 ```
 
 ## Running saved model 

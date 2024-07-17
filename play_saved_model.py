@@ -115,7 +115,7 @@ def play_model(path, checkpoint='last', environment='default', seed=None, header
 
 if __name__ == "__main__":
 
-    model_folder = 'mlp_32'
+    model_folder = 'ppo_ncap_model_32'
 
     task_name = 'swimmer-swim_task'
 
