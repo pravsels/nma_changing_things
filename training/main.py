@@ -9,10 +9,11 @@ from environment.tasks import swim_task
 TOTAL_STEPS = 5e5
 SAVE_INTERVAL = 1e5
 # Model parameters
-actor_sizes = (32, 32)
-critic_sizes = (32, 32)
+model_size = 32
+actor_sizes = (model_size, model_size)
+critic_sizes = (model_size, model_size)
 # Experiment name
-experiment_name = 'mlp_32'
+experiment_name = f'mlp_{model_size}'
 ######################################################
 
 if __name__ == "__main__":
