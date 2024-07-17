@@ -3,7 +3,7 @@ from dm_control import suite
 import dm_control.suite.swimmer as swimmer
 from environment.tasks import swim_task
 from acme import wrappers
-from utils import render, write_video
+from utils.utils import render, write_video
 
 def test_dm_control(env, n_steps=60):
     """Tests a DeepMind control suite environment by executing random actions."""
