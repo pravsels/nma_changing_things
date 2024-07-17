@@ -9,12 +9,12 @@ def add_changes(model):
                         rgba=[1, 0, 0, 1])  # Red color
 
     # # Add a movable sphere
-    # sphere_body = model.worldbody.add('body', name='movable_sphere')
-    # sphere_body.add('joint', type='free')
-    # sphere_body.add('geom', 
-    #                 type='sphere', 
-    #                 size=[0.1], 
-    #                 pos=[1.5, 0.5, 0.1], 
-    #                 rgba=[0, 1, 0, 1],  # Green color
-    #                 mass=1)
+    sphere_body = model.worldbody.add('body', name='movable_sphere')
+    sphere_body.add('joint', type='free')
+    sphere_body.add('geom', 
+                    type='sphere', 
+                    size=[0.1], 
+                    pos=[0.5, 0.5, 0.1], 
+                    rgba=[0, 1, 0, 1],  # Green color
+                    mass=1)
 
