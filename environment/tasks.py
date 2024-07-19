@@ -1,9 +1,9 @@
 import dm_control.suite.swimmer as swimmer
 from dm_control import mjcf
 from constants import SWIM_SPEED, DEFAULT_TIME_LIMIT, CONTROL_TIMESTEP, N_LINKS
-from swim import Swim
+from environment.swim import Swim
 from dm_control.rl import control
-from environment_mods import add_changes
+from environment.environment_mods import add_changes
 
 @swimmer.SUITE.add()
 def swim_task(

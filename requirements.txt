@@ -3,3 +3,4 @@ seaborn
 torch 
 numpy==1.23.5
 imageio[ffmpeg]
+moviepy
