@@ -20,6 +20,7 @@ def swim_task(
     add_changes(model)
     modified_model_string = model.to_xml_string()
     
+    # physics = swimmer.Physics.from_xml_string(modified_model_string, assets=assets)
     physics = swimmer.Physics.from_xml_string(modified_model_string, assets=assets)
     # import pdb; pdb.set_trace()
     task = Swim(desired_speed=desired_speed, random=random)

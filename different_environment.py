@@ -1,12 +1,19 @@
 import numpy as np
-from dm_control import suite
+from dm_control import suite, mujoco
 import dm_control.suite.swimmer as swimmer
 from acme import wrappers
 from environment import swim_task
 from utils import render, write_video
 
+# changing the environment
+test_MJCF = """
+<mujoco>
+    <worldbody>
+    
+"""
 
-def test_dm_control(env, n_steps=60):
+
+def test_dm_control(env, n_steps=600):
     """Tests a DeepMind control suite environment by executing random actions."""
     env = wrappers.CanonicalSpecWrapper(env, clip=True)
     env = wrappers.SinglePrecisionWrapper(env)
