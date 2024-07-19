@@ -115,7 +115,17 @@ def play_model(path, checkpoint='last', environment='default', seed=None, header
 
 if __name__ == "__main__":
 
-    model_folder = 'ppo_ncap_model_32'
+    #parse arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model_folder', type=str, help='Folder name of the model to play')
+    
+
+    args = parser.parse_args()
+    model_folder = args.model_folder
+
+    if model_folder is None:
+        # Throw error if model_folder is not provided
+        raise ValueError('Please provide the model folder name to play the model')
 
     task_name = 'swimmer-swim_task'
 
