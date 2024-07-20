@@ -8,4 +8,4 @@ name: ppo_ncap_model_128
 parallel: 1
 seed: 0
 sequential: 1
-trainer: tonic.Trainer(steps=int(50000.0),save_steps=int(10000.0))
+trainer: tonic.Trainer(steps=int(100000.0),save_steps=int(10000.0))

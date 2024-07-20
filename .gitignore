@@ -1,0 +1,8 @@
+
+__pycache__/
+*.mp4 
+*.png
+
+data/
+
+network_viz/

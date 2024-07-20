@@ -16,7 +16,7 @@ class SwimmerModule(nn.Module):
             include_proprioception: bool = True,
             include_head_oscillators: bool = True,
             include_speed_control: bool = False,
-            include_turn_control: bool = True,
+            include_turn_control: bool = False,
     ):
         super().__init__()
         self.n_joints = n_joints
