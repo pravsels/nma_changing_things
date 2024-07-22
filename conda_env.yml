@@ -1,0 +1,17 @@
+name: nct
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - glew
+  - glfw
+  - ffmpeg
+  - pip:
+    - "dm-acme[envs]"
+    - "dm_control>=1.0.16"
+    - mujoco
+    - -r requirements.txt
+variables:
+  LD_LIBRARY_PATH: "$LD_LIBRARY_PATH:/usr/local/nvidia/lib:/usr/local/nvidia/lib64"
+
