@@ -16,6 +16,7 @@ def train(header, agent, environment, name='test', trainer='tonic.Trainer()',
     # Build the train and test environments.
     _environment = environment
     environment = tonic.environments.distribute(lambda: eval(_environment), parallel, sequential)
+    
     test_environment = tonic.environments.distribute(lambda: eval(_environment))
 
     # Build the agent.
