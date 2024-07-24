@@ -35,7 +35,7 @@ def get_checkpoint_path(checkpoint, path):
 
     return os.path.join(cp_path, f'step_{cp_id}')
 
-def play_model(path, checkpoint='last', environment='default', seed=None, header=None):
+def play_model(path, checkpoint='last', environment='default', seed=None, header=None, ablation=False):
     """
     Plays a model within an environment and renders the gameplay to a video.
 
@@ -81,6 +81,20 @@ def play_model(path, checkpoint='last', environment='default', seed=None, header
     if checkpoint_path:
         agent.load(checkpoint_path)
 
+    if ablation:
+        sensors_to_exclude = [1,3,5]
+        parameters_to_exclude = []
+        for i in sensors_to_exclude:
+            parameters_to_exclude.append(f'actor.swimmer.params.bneuron_d_prop_{i}')
+            parameters_to_exclude.append(f'actor.swimmer.params.bneuron_v_prop_{i}')
+        # print named parameters of the agent
+        with torch.no_grad():
+            for name, param in agent.model.named_parameters():  
+                #print(name)
+                if name in parameters_to_exclude:
+                    print(f"Setting {name} to zero")
+                    param.zero_()
+
     # Run the episode
     test_observations = environment.start()
     frames = [environment.render('rgb_array', camera_id=0, width=640, height=480)[0]]
@@ -118,10 +132,14 @@ if __name__ == "__main__":
     #parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_folder', type=str, help='Folder name of the model to play')
+    # parse ablation argument (default false)
+    parser.add_argument('--ablation', action='store_true', help='Ablation study')
     
 
     args = parser.parse_args()
     model_folder = args.model_folder
+    ablation = args.ablation
+    print(f"ablation: {ablation}")
 
     if model_folder is None:
         # Throw error if model_folder is not provided
@@ -131,7 +149,8 @@ if __name__ == "__main__":
 
     video_path = play_model(f'./data/local/experiments/tonic/{task_name}/{model_folder}', 
                             checkpoint="last", 
-                            environment="default")
+                            environment="default",
+                            ablation=ablation)
 
     print(f"Video saved to: {video_path}")
 

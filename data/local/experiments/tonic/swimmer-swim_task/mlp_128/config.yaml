@@ -2,10 +2,13 @@ after_training: null
 agent: tonic.torch.agents.PPO(model=ppo_mlp_model(actor_sizes=(128, 128), critic_sizes=(128,
   128)))
 before_training: null
+damage: false
 environment: tonic.environments.ControlSuite("swimmer-swim_task")
 header: import tonic.torch
+load_pretrained: false
 name: mlp_128
 parallel: 1
 seed: 0
+sensors_to_damage: []
 sequential: 1
 trainer: tonic.Trainer(steps=int(500000.0),save_steps=int(100000.0))

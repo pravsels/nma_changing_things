@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn 
 import numpy as np 
 
+
+exclude_joints = []
 class SwimmerActor(nn.Module):
     def __init__(
             self,
@@ -26,8 +28,13 @@ class SwimmerActor(nn.Module):
 
     def forward(self, observations):
         joint_pos = observations[..., :self.action_size]
+        #print("pre",observations.shape)
+        for j in range(self.action_size):
+            if j in exclude_joints:
+                joint_pos[:,j] = torch.tensor([0.0])
+                #print(" observation at joint ", j," removed ")
         timesteps = observations[..., -1, None]
-
+        #print("post",observations.shape)
         # Normalize joint positions by max joint angle (in radians).
         joint_limit = 2 * np.pi / (self.action_size + 1)  # In dm_control, calculated with n_bodies.
         joint_pos = torch.clamp(joint_pos / joint_limit, min=-1, max=1)
@@ -38,6 +45,8 @@ class SwimmerActor(nn.Module):
             timesteps = (timesteps - low_in) / (high_in - low_in) * (high_out - low_out) + low_out
 
         # Generate high-level control signals.
+        #print("before controller",observations.shape)
+
         if self.controller:
             right, left, speed = self.controller(observations)
         else:

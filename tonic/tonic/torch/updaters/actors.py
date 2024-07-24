@@ -118,6 +118,7 @@ class TrustRegionPolicyGradient:
         self.entropy_coeff = entropy_coeff
 
     def initialize(self, model):
+        
         self.model = model
         self.variables = models.trainable_variables(self.model.actor)
 
@@ -163,6 +164,7 @@ class DeterministicPolicyGradient:
         self.gradient_clip = gradient_clip
 
     def initialize(self, model):
+        
         self.model = model
         self.variables = models.trainable_variables(self.model.actor)
         self.optimizer = self.optimizer(self.variables)

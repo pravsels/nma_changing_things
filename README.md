@@ -33,8 +33,9 @@ python training/mlp_train.py
 
 Simulate worm using trained model: 
 ```
-python play_saved_model.py 
+python play_saved_model.py --model_folder=[folder_name]
 ```
+Where [folder_name] is the name of thefolder containg the experiment you want to play (ex. mlp_128)
 
 ## Plotting  
 

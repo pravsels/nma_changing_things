@@ -1,6 +1,12 @@
 
 import torch.nn as nn 
 from ncap_swimmer.constraints import * 
+import os
+
+# if log file exists
+def remove_log_file(log_file):
+    if os.path.exists(log_file):
+        os.remove(log_file)
 
 class SwimmerModule(nn.Module):
     """C.-elegans-inspired neural circuit architectural prior."""
@@ -10,13 +16,15 @@ class SwimmerModule(nn.Module):
             n_joints: int,
             n_turn_joints: int = 1,
             oscillator_period: int = 60,
-            use_weight_sharing: bool = True,
+            use_weight_sharing: bool = False,
             use_weight_constraints: bool = True,
             use_weight_constant_init: bool = True,
             include_proprioception: bool = True,
             include_head_oscillators: bool = True,
             include_speed_control: bool = False,
             include_turn_control: bool = False,
+            excluded_proprioceptors: list = [],
+            log_file = 'data/local/experiments/tonic/swimmer-swim_task/ppo_ncap_model_128/log.txt'
     ):
         super().__init__()
         self.n_joints = n_joints
@@ -26,6 +34,7 @@ class SwimmerModule(nn.Module):
         self.include_head_oscillators = include_head_oscillators
         self.include_speed_control = include_speed_control
         self.include_turn_control = include_turn_control
+        remove_log_file(log_file)
 
         # Log activity
         self.connections_log = []
@@ -69,10 +78,15 @@ class SwimmerModule(nn.Module):
             self.params['muscle_contra'] = inh_param()
         else:
             for i in range(self.n_joints):
-                if self.include_proprioception and i > 0:
-                    self.params[f'bneuron_d_prop_{i}'] = exc_param()
-                    self.params[f'bneuron_v_prop_{i}'] = exc_param()
-
+                #print(f"i: {i}")
+                if self.include_proprioception and i>0:
+                    if i not in excluded_proprioceptors:
+                        self.params[f'bneuron_d_prop_{i}'] = exc_param()
+                        self.params[f'bneuron_v_prop_{i}'] = exc_param()
+                    else:
+                        self.params[f'bneuron_d_prop_{i}'] = torch.tensor([0.0])
+                        self.params[f'bneuron_v_prop_{i}'] = torch.tensor([0.0])
+                    
                 if self.include_speed_control:
                     self.params[f'bneuron_d_speed_{i}'] = inh_param()
                     self.params[f'bneuron_v_speed_{i}'] = inh_param()
@@ -93,9 +107,15 @@ class SwimmerModule(nn.Module):
     def reset(self):
         self.timestep = 0
 
-    def log_activity(self, activity_type, neuron):
+    def log_activity(self, activity_type,bneuron_d, bneuron_v, i, log_file):
         """Logs an active connection between neurons."""
-        self.connections_log.append((self.timestep, activity_type, neuron))
+        #self.connections_log.append((self.timestep, activity_type, neuron))
+        # log activity and neuron to file
+
+        with open(log_file, 'a') as f:
+            if bneuron_d.shape[0] == 1: 
+                f.write(f'{self.timestep}, {activity_type}, bneuron_d_{i}: {round(bneuron_d.item(),2)}, bneuron_v_{i}: {round(bneuron_v.item(),2)}\n')
+
 
     def forward(
             self,
@@ -105,7 +125,8 @@ class SwimmerModule(nn.Module):
             speed_control=None,
             timesteps=None,
             log_activity=True,
-            log_file='log.txt'
+            log_file='data/local/experiments/tonic/swimmer-swim_task/ppo_ncap_model_128/log.txt',
+            log_interval=1000,
     ):
         """Forward pass.
 
@@ -143,8 +164,10 @@ class SwimmerModule(nn.Module):
                     ..., i - 1, None] * exc(self.params[ws(f'bneuron_d_prop_{i}', 'bneuron_prop')])
                 bneuron_v = bneuron_v + joint_pos_v[
                     ..., i - 1, None] * exc(self.params[ws(f'bneuron_v_prop_{i}', 'bneuron_prop')])
-                self.log_activity('exc', f'bneuron_d_prop_{i}')
-                self.log_activity('exc', f'bneuron_v_prop_{i}')
+                if self.timestep % log_interval == 0 and log_activity:
+                    self.log_activity('exc', bneuron_d.detach(), bneuron_v.detach(), i, log_file)
+                    #print(f"bneuron_d_prop_{i}: {bneuron_d} bneuron_v_prop_{i}: {bneuron_v}")
+
 
             # Speed control unit modulates all B-neurons.
             if self.include_speed_control:
@@ -154,8 +177,8 @@ class SwimmerModule(nn.Module):
                 bneuron_v = bneuron_v + speed_control * inh(
                     self.params[ws(f'bneuron_v_speed_{i}', 'bneuron_speed')]
                 )
-                self.log_activity('inh', f'bneuron_d_speed_{i}')
-                self.log_activity('inh', f'bneuron_v_speed_{i}')
+                if self.timestep % log_interval == 0 and log_activity:
+                    self.log_activity('exc', bneuron_d.detach(), bneuron_v.detach(), i, log_file)
 
             # Turn control units modulate head B-neurons.
             if self.include_turn_control and i < self.n_turn_joints:
@@ -169,8 +192,8 @@ class SwimmerModule(nn.Module):
                 bneuron_v = bneuron_v + turn_control_v * exc(
                     self.params[ws(f'bneuron_v_turn_{i}', 'bneuron_turn')]
                 )
-                self.log_activity('exc', f'bneuron_d_turn_{i}')
-                self.log_activity('exc', f'bneuron_v_turn_{i}')
+                if self.timestep % log_interval == 0 and log_activity:
+                    self.log_activity('exc', bneuron_d.detach(), bneuron_v.detach(), i, log_file)
 
             # Oscillator units modulate first B-neurons.
             if self.include_head_oscillators and i == 0:
@@ -193,9 +216,8 @@ class SwimmerModule(nn.Module):
                 bneuron_v = bneuron_v + oscillator_v * exc(
                     self.params[ws(f'bneuron_v_osc_{i}', 'bneuron_osc')]
                 )
-
-                self.log_activity('exc', f'bneuron_d_osc_{i}')
-                self.log_activity('exc', f'bneuron_v_osc_{i}')
+            if self.timestep % log_interval == 0 and log_activity:
+                self.log_activity('exc', bneuron_d.detach(), bneuron_v.detach(), i, log_file)
 
             # B-neuron activation.
             bneuron_d = graded(bneuron_d)
@@ -214,7 +236,6 @@ class SwimmerModule(nn.Module):
             # Joint torque from antagonistic contraction of dorsal and ventral muscles.
             joint_torque = muscle_d - muscle_v
             joint_torques.append(joint_torque)
-
         self.timestep += 1
 
         out = torch.cat(joint_torques, -1)  # shape (..., n_joints)

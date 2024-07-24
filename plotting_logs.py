@@ -47,7 +47,7 @@ def plot_performance(paths, output_file=None, title='Model Performance'):
 if __name__ == "__main__":
 
     mlp_model_folder = 'mlp_128'
-    ncap_model_folder1 = 'ppo_ncap_model_32'
+    ncap_model_folder1 = 'ppo_ncap_model_128_full'
     # ncap_model_folder2 = 'd4pg_ncap_model_32'
     task_name = 'swimmer-swim_task'
 

@@ -1,30 +1,9 @@
 from tonic.torch import models, normalizers
 import torch
-import torch.nn as nn
+import torch.nn as nn 
 from ncap_swimmer.swimmer_actor import SwimmerActor
 from ncap_swimmer.swimmer import SwimmerModule
-
-
-# ludo nn controller class
-class TurnControllerCustom(nn.Module):
-    def __init__(self, hidden_size=64):
-        super().__init__()
-        self.network = nn.Sequential(
-            nn.Linear(
-                49, hidden_size
-            ),  # Assuming 5 is the observation size, adjust if needed
-            nn.ReLU(),
-            nn.Linear(hidden_size, 3),  # Output: right, left, speed
-        )
-
-    def forward(self, observations):
-        #print(f"Observations size in controller: {observations.size()}")
-        control = self.network(observations)
-        right = torch.tanh(control[..., 0])  # Right turn control
-        left = torch.tanh(control[..., 1])  # Left turn control
-        speed = torch.tanh(control[..., 2])  # Speed control
-        return right, left, speed
-
+import tonic
 
 def ppo_mlp_model(
     actor_sizes=(64, 64),
@@ -32,7 +11,7 @@ def ppo_mlp_model(
     critic_sizes=(64, 64),
     critic_activation=torch.nn.Tanh,
 ):
-    rl_model = models.ActorCritic(
+    rl_model =  models.ActorCritic(
         actor=models.Actor(
             encoder=models.ObservationEncoder(),
             torso=models.MLP(actor_sizes, actor_activation),
@@ -46,60 +25,73 @@ def ppo_mlp_model(
         observation_normalizer=normalizers.MeanStd(),
     )
 
-    return rl_model
-
-
-# device = 'cuda' if torch.cuda.is_available() else 'cpu'
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# ludo controller
-mlp_controller = TurnControllerCustom()
-# mlp_controller.to(device)
-
-
-# dumb controller to check the change in the worm movement
-def dumb_controller(o):
-    return (torch.tensor([1.0]), torch.tensor([0.0]), torch.tensor([1.0]))
-
+    return rl_model 
 
 def ppo_ncap_model(
-    n_joints=5,
-    action_noise=0.1,
-    critic_sizes=(64, 64),
-    critic_activation=nn.Tanh,
-    **swimmer_kwargs,
+        n_joints=5,
+        action_noise=0.1,
+        critic_sizes=(64, 64),
+        critic_activation=nn.Tanh,
+        load_pretrained=False,
+        **swimmer_kwargs,
 ):
-    rl_model = models.ActorCritic(
-        actor=SwimmerActor(
-            swimmer=SwimmerModule(n_joints=n_joints, **swimmer_kwargs),
-            controller=mlp_controller,
-            distribution=lambda x: torch.distributions.normal.Normal(x, action_noise),
-        ),
-        critic=models.Critic(
-            encoder=models.ObservationEncoder(),
-            torso=models.MLP(critic_sizes, critic_activation),
-            head=models.ValueHead(),
-        ),
-        observation_normalizer=normalizers.MeanStd(),
-    )
 
-    return rl_model
+    if not load_pretrained:
+        rl_model = models.ActorCritic(
+            actor=SwimmerActor(
+                swimmer=SwimmerModule(n_joints=n_joints,excluded_proprioceptors=[1,3,5], 
+                                    **swimmer_kwargs),
+                distribution=lambda x: torch.distributions.normal.Normal(x, action_noise),
+            ),
+            critic=models.Critic(
+                encoder=models.ObservationEncoder(),
+                torso=models.MLP(critic_sizes, critic_activation),
+                head=models.ValueHead(),
+            ),
+            observation_normalizer=normalizers.MeanStd(),
+        )
+        print(rl_model)
+        return rl_model
+    else:
+        # load pretrained SwimmerModule checkpoint
+        swimmer = SwimmerModule(n_joints=n_joints, **swimmer_kwargs)
+
+        # Load pretrained weights
+        pretrained_path ='data/local/experiments/tonic/swimmer-swim_task/ppo_ncap_model_128/checkpoints/step_50000.pt'
+        pretrained_state_dict = torch.load(pretrained_path)
+        swimmer.load_state_dict(pretrained_state_dict)
+        print(f"Loaded pretrained weights from {pretrained_path}")
+        
+        # Create ActorCritic model
+        rl_model = models.ActorCritic(
+            actor=SwimmerActor(
+                swimmer=swimmer,
+                distribution=lambda x: torch.distributions.normal.Normal(x, action_noise),
+            ),
+            critic=models.Critic(
+                encoder=models.ObservationEncoder(),
+                torso=models.MLP(critic_sizes, critic_activation),
+                head=models.ValueHead(),
+            ),
+            observation_normalizer=normalizers.MeanStd(),
+        )
+
+        return rl_model
 
 
 def d4pg_ncap_model(
-    n_joints=5,
-    critic_sizes=(256, 256),
-    critic_activation=nn.ReLU,
-    **swimmer_kwargs,
+  n_joints=5,
+  critic_sizes=(256, 256),
+  critic_activation=nn.ReLU,
+  **swimmer_kwargs,
 ):
     rl_model = models.ActorCriticWithTargets(
-        actor=SwimmerActor(
-            swimmer=SwimmerModule(n_joints=n_joints, **swimmer_kwargs),
-        ),
+        actor=SwimmerActor(swimmer=SwimmerModule(n_joints=n_joints, **swimmer_kwargs),),
         critic=models.Critic(
-            encoder=models.ObservationActionEncoder(),
-            torso=models.MLP(critic_sizes, critic_activation),
-            # These values are for the control suite with 0.99 discount.
-            head=models.DistributionalValueHead(-150.0, 150.0, 51),
+        encoder=models.ObservationActionEncoder(),
+        torso=models.MLP(critic_sizes, critic_activation),
+        # These values are for the control suite with 0.99 discount.
+        head=models.DistributionalValueHead(-150., 150., 51),
         ),
         observation_normalizer=normalizers.MeanStd(),
     )

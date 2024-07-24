@@ -2,7 +2,6 @@ import collections
 from dm_control.utils import rewards
 import dm_control.suite.swimmer as swimmer
 from constants import SWIM_SPEED
-import numpy as np
 
 class Swim(swimmer.Swimmer):
     """Task to swim forwards at the desired speed."""
@@ -18,23 +17,16 @@ class Swim(swimmer.Swimmer):
 
     def get_observation(self, physics):
         """Returns an observation of joint angles and body velocities."""
-        swimmer_pos = physics.named.data.geom_xpos['head'][:2]
-        # Get the sphere's position
-        sphere_pos = [0.5, 0.5]  # Assuming the sphere's position is fixed at [0.5, 0.5]
-        
-        # Calculate the distance between the swimmer and the sphere
-        distance = np.linalg.norm(swimmer_pos - sphere_pos)
-        #print("Distance: ", distance)
         return collections.OrderedDict({
             'joints': physics.joints(),
-            'body_velocities': physics.body_velocities(),
-            'distance': distance
+            'body_velocities': physics.body_velocities()
         })
 
-    def old_get_reward(self, physics):
+    def get_reward(self, physics):
         """Returns a smooth reward that is 0 when stopped or moving backwards, 
            and rises linearly to 1 when moving forwards at the desired speed."""
         forward_velocity = -physics.named.data.sensordata['head_vel'][1]
+        
         return rewards.tolerance(
             forward_velocity,
             bounds=(self._desired_speed, float('inf')),
@@ -43,22 +35,3 @@ class Swim(swimmer.Swimmer):
             sigmoid='linear'
         )
 
-    def get_reward(self, physics):
-        forward_velocity = -physics.named.data.sensordata['head_vel'][1]
-        swimmer_pos = physics.named.data.geom_xpos['head'][:2]
-        # Get the sphere's position
-        sphere_pos = [0.5, 0.5]  # Assuming the sphere's position is fixed at [0.5, 0.5]
-
-        # Calculate the distance between the swimmer and the sphere
-        distance = np.linalg.norm(swimmer_pos - sphere_pos)
-        
-        #print("Distance: ", distance)
-        # Define the maximum distance threshold
-        max_distance = 1.0
-        
-        # Calculate the reward based on the distance
-        reward = (1 - np.clip(distance / max_distance, 0, 1))*10
-        #print("Distance: ", distance)
-        #print("Reward: ", reward)
-        return reward
-    
