@@ -48,7 +48,7 @@ class Swim(swimmer.Swimmer):
         swimmer_pos = physics.named.data.geom_xpos['head'][:2]
         # Get the sphere's position
         sphere_pos = [0.5, 0.5]  # Assuming the sphere's position is fixed at [0.5, 0.5]
-        
+
         # Calculate the distance between the swimmer and the sphere
         distance = np.linalg.norm(swimmer_pos - sphere_pos)
         
@@ -57,7 +57,7 @@ class Swim(swimmer.Swimmer):
         max_distance = 1.0
         
         # Calculate the reward based on the distance
-        reward = (1 - np.clip(distance / max_distance, 0, 1))*2
+        reward = (1 - np.clip(distance / max_distance, 0, 1))*10
         #print("Distance: ", distance)
         #print("Reward: ", reward)
         return reward

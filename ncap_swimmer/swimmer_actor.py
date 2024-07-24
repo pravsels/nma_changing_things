@@ -37,6 +37,11 @@ class SwimmerActor(nn.Module):
             low_in, high_in, low_out, high_out = self.timestep_transform
             timesteps = (timesteps - low_in) / (high_in - low_in) * (high_out - low_out) + low_out
 
+        # Generate high-level control signals.
+        if self.controller:
+            right, left, speed = self.controller(observations)
+        else:
+            right, left, speed = None, None, None
 
         # Generate low-level action signals.
         actions = self.swimmer(
@@ -52,4 +57,3 @@ class SwimmerActor(nn.Module):
             actions = self.distribution(actions)
 
         return actions
-
